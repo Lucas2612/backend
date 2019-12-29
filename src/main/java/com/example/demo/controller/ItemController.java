@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -14,11 +15,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.entity.Item;
+import com.example.demo.entity.Usuario;
 import com.example.demo.repository.ItemRepo;
+import com.mongodb.annotations.ThreadSafe;
 
 @RestController
 @RequestMapping("/api")
 @CrossOrigin("http://localhost:4200")
+@ThreadSafe
 public class ItemController {
 
 	private ItemRepo itemRepo;
@@ -34,9 +38,17 @@ public class ItemController {
 		return itemRepo.findAll();
 	}
 	
+	// get 1 item to update name
+	@GetMapping("/items/{itemId}")
+	public Item getEmployee(@PathVariable long itemId) {
+		Optional<Item> tempItem = itemRepo.findById(itemId);
+		return tempItem.get();
+	}
+	
+	
 	// exposing insert new item
 	@PostMapping("/items")
-	public Item addEmployee(@RequestBody Item newItem) {
+	public Item addItem(@RequestBody Item newItem) {
 		System.out.println("Inserindo: " + newItem);
 		itemRepo.insert(newItem);
 		return newItem;
@@ -44,13 +56,6 @@ public class ItemController {
 	
 	@DeleteMapping("/items/{itemId}")
 	public void deleteItem(@PathVariable Long itemId) {
-		
-		if (itemRepo.existsById(itemId)) {
-			System.out.println("Existe ID");
-		}else {
-			System.out.println("Não existe ID");
-		}
-
 		itemRepo.deleteById(itemId);		
 	}
 	
