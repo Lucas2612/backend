@@ -4,19 +4,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import com.example.demo.repository.ItemRepo;
+import com.example.demo.controller.GrupoController;
 
 @SpringBootApplication
 public class ExercicioApplication {
 
 	@Autowired
-	private ItemRepo itemRepo;
+	private GrupoController grupoController;
 
-	public static void main(String[] args) {
+	public static void main(String[] args)  {
 		SpringApplication.run(ExercicioApplication.class, args);
 		
 		
 	}
+
+	
+	/*
+	 * @Override public void run(String... args) throws Exception {
+	 * grupoController.getGrupos(); }
+	 */
 	
 	/*
 	 * @Override public void run(String... args) throws Exception {

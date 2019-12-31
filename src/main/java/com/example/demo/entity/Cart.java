@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 public class Cart {
 	
-	private long idUsuario;
+	private Long id;
 	private List<ItemCart> itemCarts;
 
 }

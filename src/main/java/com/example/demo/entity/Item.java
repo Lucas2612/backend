@@ -8,6 +8,6 @@ public class Item {
 	 //ID, NOME e VALOR. 
 	private Long id;
 	private String nome;
-	private double valor;
+	private Double valor;
 	
 }

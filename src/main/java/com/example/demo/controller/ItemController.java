@@ -14,8 +14,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.entity.Cart;
 import com.example.demo.entity.Item;
-import com.example.demo.entity.Usuario;
+import com.example.demo.entity.ItemCart;
+import com.example.demo.repository.CartRepo;
 import com.example.demo.repository.ItemRepo;
 import com.mongodb.annotations.ThreadSafe;
 
@@ -26,10 +28,12 @@ import com.mongodb.annotations.ThreadSafe;
 public class ItemController {
 
 	private ItemRepo itemRepo;
+	private CartRepo cartRepo;
 	
 	@Autowired // Injecting itemRepo
-	public ItemController(ItemRepo itemRepo) {
+	public ItemController(ItemRepo itemRepo, CartRepo cartRepo) {
 		this.itemRepo = itemRepo;
+		this.cartRepo = cartRepo;
 	}
 	
 	// exposing Select All
@@ -40,7 +44,7 @@ public class ItemController {
 	
 	// get 1 item to update name
 	@GetMapping("/items/{itemId}")
-	public Item getEmployee(@PathVariable long itemId) {
+	public Item getItem(@PathVariable long itemId) {
 		Optional<Item> tempItem = itemRepo.findById(itemId);
 		return tempItem.get();
 	}
@@ -56,6 +60,22 @@ public class ItemController {
 	
 	@DeleteMapping("/items/{itemId}")
 	public void deleteItem(@PathVariable Long itemId) {
+		
+		// get carts e delete items
+		List<Cart> cartList = cartRepo.findAll();
+		for (Cart cart : cartList) {
+			for (ItemCart itemCart : cart.getItemCarts()) {
+				if (itemCart.getItem().getId().equals(itemId)) {
+					// remove
+					cart.getItemCarts().remove(itemCart);
+					break;
+				}
+			}
+			// update
+			cartRepo.save(cart);
+		}
+		
+		
 		itemRepo.deleteById(itemId);		
 	}
 	

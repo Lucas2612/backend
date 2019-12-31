@@ -24,7 +24,7 @@ import com.mongodb.annotations.ThreadSafe;
 @ThreadSafe
 public class CartController {
 
-private CartRepo cartRepo;
+	private CartRepo cartRepo;
 	
 	@Autowired // Injecting cartRepo
 	public CartController(CartRepo cartRepo) {
@@ -39,9 +39,11 @@ private CartRepo cartRepo;
 	
 	@GetMapping("/carrinhos/{carrinhoId}")
 	public Cart getCart(@PathVariable long carrinhoId) {
-		
+		System.out.println("GET id: " + carrinhoId);
 		Optional<Cart> tempCart= cartRepo.findById(carrinhoId);
-		return tempCart.get();
+		if (tempCart.isPresent()) return tempCart.get();
+		
+		return null;
 	}
 	
 	// exposing insert new cart
@@ -54,13 +56,6 @@ private CartRepo cartRepo;
 	
 	@DeleteMapping("/carrinhos/{cartId}")
 	public void deleteCart(@PathVariable Long cartId) {
-		
-		if (cartRepo.existsById(cartId)) {
-			System.out.println("Existe ID");
-		}else {
-			System.out.println("Não existe ID");
-		}
-
 		cartRepo.deleteById(cartId);		
 	}
 	

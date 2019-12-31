@@ -14,7 +14,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.entity.Cart;
+import com.example.demo.entity.ItemCart;
 import com.example.demo.entity.Usuario;
+import com.example.demo.repository.CartRepo;
 import com.example.demo.repository.UsuarioRepo;
 import com.mongodb.annotations.ThreadSafe;
 
@@ -25,10 +28,12 @@ import com.mongodb.annotations.ThreadSafe;
 public class UsuarioController {
 
 	private UsuarioRepo usuarioRepo;
+	private CartRepo cartRepo;
 	
 	@Autowired // Injecting UsuarioRepo
-	public UsuarioController(UsuarioRepo usuarioRepo) {
+	public UsuarioController(UsuarioRepo usuarioRepo, CartRepo cartRepo) {
 		this.usuarioRepo = usuarioRepo;
+		this.cartRepo = cartRepo;
 	}
 	
 	// exposing Select All
@@ -38,10 +43,8 @@ public class UsuarioController {
 	}
 	
 	@GetMapping("/usuarios/{usuarioId}")
-	public Usuario getEmployee(@PathVariable long usuarioId) {
-		
+	public Usuario getUsuario(@PathVariable long usuarioId) {
 		Optional<Usuario> tempUsuario = usuarioRepo.findById(usuarioId);
-		System.out.println("Get one user");
 		return tempUsuario.get();
 	}
 	
@@ -56,12 +59,13 @@ public class UsuarioController {
 	@DeleteMapping("/usuarios/{usuarioId}")
 	public void deleteUsuario(@PathVariable Long usuarioId) {
 		
-		if (usuarioRepo.existsById(usuarioId)) {
-			System.out.println("Existe ID");
-		}else {
-			System.out.println("Não existe ID");
+		// get carts e delete items
+		List<Cart> cartList = cartRepo.findAll();
+		for (Cart cart : cartList) {
+			if (cart.getId().equals(usuarioId)) {
+				cartList.remove(cart);
+			}
 		}
-
 		usuarioRepo.deleteById(usuarioId);		
 	}
 	
