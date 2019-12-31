@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.entity.Cart;
-import com.example.demo.entity.ItemCart;
 import com.example.demo.entity.Usuario;
 import com.example.demo.repository.CartRepo;
 import com.example.demo.repository.UsuarioRepo;
@@ -43,9 +42,10 @@ public class UsuarioController {
 	}
 	
 	@GetMapping("/usuarios/{usuarioId}")
-	public Usuario getUsuario(@PathVariable long usuarioId) {
+	public Usuario getUsuario(@PathVariable Long usuarioId) {
 		Optional<Usuario> tempUsuario = usuarioRepo.findById(usuarioId);
-		return tempUsuario.get();
+		if (tempUsuario.isPresent()) return tempUsuario.get();
+		return null;
 	}
 	
 	// exposing insert new item
@@ -59,13 +59,12 @@ public class UsuarioController {
 	@DeleteMapping("/usuarios/{usuarioId}")
 	public void deleteUsuario(@PathVariable Long usuarioId) {
 		
-		// get carts e delete items
-		List<Cart> cartList = cartRepo.findAll();
-		for (Cart cart : cartList) {
-			if (cart.getId().equals(usuarioId)) {
-				cartList.remove(cart);
-			}
+		// delete cart if exists
+		Optional<Cart> optCart= cartRepo.findById(usuarioId);
+		if (optCart.isPresent()) {
+			cartRepo.delete(optCart.get());
 		}
+		
 		usuarioRepo.deleteById(usuarioId);		
 	}
 	

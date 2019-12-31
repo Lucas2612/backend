@@ -44,9 +44,13 @@ public class ItemController {
 	
 	// get 1 item to update name
 	@GetMapping("/items/{itemId}")
-	public Item getItem(@PathVariable long itemId) {
+	public Item getItem(@PathVariable Long itemId) {
 		Optional<Item> tempItem = itemRepo.findById(itemId);
-		return tempItem.get();
+		
+		if (tempItem.isPresent()) {
+			return tempItem.get();
+		}
+		return null;
 	}
 	
 	
@@ -72,7 +76,11 @@ public class ItemController {
 				}
 			}
 			// update
-			cartRepo.save(cart);
+			if (cart.getItemCarts().size()==0) {
+				cartRepo.delete(cart);
+			}else {
+				cartRepo.save(cart);
+			}
 		}
 		
 		
