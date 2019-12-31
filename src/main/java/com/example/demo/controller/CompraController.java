@@ -39,10 +39,16 @@ public class CompraController {
 	public List<Compra> getCompras(@PathVariable long carrinhoId){
 		Optional<Cart> optCart= cartRepo.findById(carrinhoId);
 		Cart cart = optCart.get();
+		
+		if (cart==null) {
+			System.out.println("Cart Null");
+		}
+		
 		List<Compra> listCompras = new ArrayList<Compra>();
 		
 		// transform cart to list compra
 		for (ItemCart itemCart : cart.getItemCarts()) {
+			System.out.println("loop itemcart");
 			// get updated value
 			Optional<Item> optItem = itemRepo.findById(itemCart.getItem().getId());
 			Item item = optItem.get();
