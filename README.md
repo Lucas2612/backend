@@ -16,3 +16,6 @@ java -jar target\exercicio-0.0.1-SNAPSHOT.jar
 
 4. A porta 8080 fica esperando requisições
 Ex.: http://localhost:8080/api/items
+
+5. Instalar o frontend em https://github.com/Lucas2612/frontend
+
